@@ -52,6 +52,7 @@ public class OTPAuthURI {
     private final long counter;
     private final int digits;
     private final long timeStep;
+    private final OTPAuthURIBuilder.SHAType algorithm;
 
     /**
      * Creates a new instance of an OTP Auth URI. Note that all parameters are assumed to be valid since the
@@ -71,6 +72,28 @@ public class OTPAuthURI {
         this.counter = counter;
         this.digits = digits;
         this.timeStep = timeStep;
+        this.algorithm = OTPAuthURIBuilder.SHAType.SHA1;
+    }
+
+    /**
+     * Creates a new instance of an OTP Auth URI. Note that all parameters are assumed to be valid since the
+     * {@link OTPAuthURIBuilder} is responsible for validation, and creation of {@link OTPAuthURI}s.
+     * 
+     * @param key the {@link OTPKey}.
+     * @param issuer the issuer string value (decoded/plain-text) indicating the provider or service this account is associated with
+     * @param label the label (decoded/plain-text) used to identify which account the underlying key is associated with
+     * @param counter the initial counter value (aka the moving factor)
+     * @param digits the number of digits an OTP will contain
+     * @param timeStep the time step size (in seconds) used for generating TOTPs
+     */
+    OTPAuthURI(OTPKey key, String issuer, String label, long counter, int digits, long timeStep, OTPAuthURIBuilder.SHAType algorithm) {
+        this.key = key;
+        this.issuer = issuer;
+        this.label = label;
+        this.counter = counter;
+        this.digits = digits;
+        this.timeStep = timeStep;
+        this.algorithm = algorithm;
     }
 
     /**
@@ -221,6 +244,10 @@ public class OTPAuthURI {
         if (isTOTP()) {
             sb.append("&period=");
             sb.append(timeStep);
+            if (algorithm.equals(OTPAuthURIBuilder.SHAType.SHA1) == false) {
+            	sb.append("&algorithm=");
+            	sb.append(algorithm.getName());
+            }
         }
         return sb.toString();
     }

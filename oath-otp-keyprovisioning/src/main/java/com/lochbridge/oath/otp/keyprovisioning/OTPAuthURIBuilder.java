@@ -54,6 +54,7 @@ public class OTPAuthURIBuilder {
     private String label;
     private String labelIssuerPrefix;
     private String issuer;
+    private SHAType algorithm = SHAType.SHA1; // default value
     private long counter = 0;
     private int digits;
     private long timeStep = TOTPBuilder.DEFAULT_TIME_STEP;
@@ -424,7 +425,64 @@ public class OTPAuthURIBuilder {
         if (issuer != null && labelIssuerPrefix != null) {
             Preconditions.checkState(issuer.equals(labelIssuerPrefix), "The 'issuer' and label issuer prefix values are different!");
         }
-        return new OTPAuthURI(key, issuer, label, counter, digits, TimeUnit.MILLISECONDS.toSeconds(timeStep));
+        if (algorithm.equals(SHAType.SHA1) == true) {
+        	return new OTPAuthURI(key, issuer, label, counter, digits, TimeUnit.MILLISECONDS.toSeconds(timeStep));
+        } else {
+        	return new OTPAuthURI(key, issuer, label, counter, digits, TimeUnit.MILLISECONDS.toSeconds(timeStep), algorithm);
+        	
+        }
     }
 
+    public SHAType getAlgorithm() {
+		return algorithm;
+	}
+
+	public OTPAuthURIBuilder algorithm(SHAType algorithm) {
+		this.algorithm = algorithm;
+		return this;
+	}
+
+	/**
+     * Type of algorithm. Valid types are SHA1, SHA256, or SHA512.
+     */
+    public static enum SHAType {
+
+        /** {@code SHA1} */
+        SHA1("SHA1"),
+
+        /** {@code SHA256} */
+        SHA256("SHA256"),
+        
+        /** {@code SHA512 */
+        SHA512("SHA512");
+
+        private final String name;
+
+        private SHAType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static SHAType from(String name) {
+            for (SHAType type : values()) {
+                if (type.name.equals(name)) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException("No matching SHAType constant for [" + name + "]");
+        }
+
+        /** Return a string representation of this {@code SHAType}. */
+        @Override
+        public String toString() {
+            return name;
+        }
+
+    }
+
+    
+    
 }
