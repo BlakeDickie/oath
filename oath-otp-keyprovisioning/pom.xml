@@ -18,7 +18,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        
+
         <!-- QR Code support -->
         <dependency>
             <groupId>com.google.zxing</groupId>
@@ -30,11 +30,11 @@
             <artifactId>javase</artifactId>
             <version>${com.google.zxing.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.lochbridge.oath</groupId>
             <artifactId>oath-otp</artifactId>
-            <version>0.0.2</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
